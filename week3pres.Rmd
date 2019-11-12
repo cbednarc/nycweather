@@ -1,0 +1,27 @@
+---
+title: "NYC Weather"
+author: "cbednarc"
+date: "November 10, 2019"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(plotly,quietly=TRUE)
+```
+
+
+## Monthly Temperature
+```{r}
+wxdata = read.csv("NYC.csv", stringsAsFactors=FALSE)
+wxdata$DATE = as.Date(wxdata$DATE)
+wxdata$Month = as.integer(format(wxdata$DATE,"%m"))
+wxdata$Season = ""
+wxdata$Season[wxdata$Month%in%c(12,1,2)] = "Winter"
+wxdata$Season[wxdata$Month%in%c(3,4,5)] = "Spring"
+wxdata$Season[wxdata$Month%in%c(6,7,8)] = "Summer"
+wxdata$Season[wxdata$Month%in%c(9,10,11)] = "Fall"
+wxdata = wxdata[!is.na(wxdata$TAVG),]
+plot_ly(wxdata, x=~Month, y=~TAVG, color=~Season, type="box") %>% layout(title="Monthly Distributions of Daily Average Temperatures: New York City", yaxis=list(title="Average Temperature (deg F)"))
+```
+<font size="2">Data from National Centers for Environmental Information (https://www.ncei.noaa.gov/)</font>
